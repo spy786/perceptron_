@@ -1,32 +1,41 @@
-**Binary Classification using Advanced Techniques**
+
+
+
+
+
+
+
+# **Binary Classification using Advanced Techniques**
 
 ---
 
-### **1. Problem Statement**
+## Problem Statement
+Bank A, a credit card issuer, aims to build a robust risk management framework for its existing credit card customers. To achieve this, the bank intends to develop a "Behaviour Score"—a predictive model that assesses the probability of customers defaulting on their credit cards. This score will assist in various portfolio risk management activities. A historical dataset containing 96,806 credit card records (development data) has been provided, along with independent variables such as credit limits, transaction attributes, and bureau details. Another dataset of 41,792 records (validation data) without default flags is also provided for prediction purposes.
+
+The objective is to predict default probabilities for the validation dataset using a model trained on the development data and submit these predictions along with detailed documentation of the approach and insights.
 The objective was to build a robust binary classification model to predict the bad_flag variable. The data had the following challenges:
 
-High Dimensionality: The dataset contained 1216 features.
-
-Class Imbalance: Out of 96,000 rows, only 1.4% of the samples belonged to the minority class (bad_flag == 1).
-
 ---
 
-### **2. Dataset Overview**
+## Dataset Overview
 (96806, 1216)
 The dataset contains features related to financial transactions, bureau data, and client attributes. It includes the following characteristics:
 - **Rows**: The number of observations in the dataset.
 - **Columns**: The number of attributes, including categorical and numerical variables.
 - **Target Variable**: `bad_flag` (1 for bad accounts and 0 for good accounts).
 
-Initial observations:
+#### Main Challenges Observed:
+- High Dimensionality: The dataset contained 1216 features.
+- Class Imbalance: Out of 96,000 rows, only 1.4% of the samples belonged to the minority class (bad_flag == 1)
 - Presence of duplicate rows and null values.
+- Few columns contains more than 50% null values
 - Features with zero standard deviation and features with over 99.5% identical values.
 
 ---
 
-### **3. Data Preprocessing**
+## Data Preprocessing
 
-#### **3.1 Data Cleaning**
+####  Data Cleaning
 ![image](https://github.com/user-attachments/assets/9247ddf7-b341-413f-bf99-117b3b629a63)
 
 1. **Duplicate Removal**:
@@ -41,16 +50,16 @@ Initial observations:
 4. **Highly Correlated Features**:
    - Used the correlation matrix to identify features with absolute correlations above 0.95 and removed them to prevent multicollinearity.
 
-#### **3.2 Data Splitting**
+###  Data Splitting 
 - Split the dataset into training (80%) and testing (20%) sets, stratified by the target variable to maintain the distribution of classes.
 
-#### **3.3 Feature Imputation**
+####  Feature Imputation
 - **Categorical Features**: Imputed missing values using a KNN imputer.
 - **Numerical Features**: Used the mean strategy for imputation with `SimpleImputer`.
 
 ---
 
-### **4. Data Augmentation**
+## Data Augmentation
 
 To address class imbalance, we implemented an augmentation strategy:
 - **Dimensionality Reduction**: Applied UMAP to reduce features to 2D for clustering.
@@ -78,26 +87,26 @@ To address class imbalance, we implemented an augmentation strategy:
       L2 regularization strength.
 ---
 
-### **5. Feature Scaling and Transformation**
+## Feature Scaling and Transformation
 
-#### **5.1 Winsorization**
+####  Winsorization
 ![image](https://github.com/user-attachments/assets/76153fe7-5147-488c-992e-81baff83e2ec)
 - Applied winsorization to numerical features to limit extreme values (0.2% on both tails).
 
-#### **5.2 Offset Correction**
+####  Offset Correction
 - Added absolute minimum values to columns with negative values.
 
-#### **5.3 Log Transformation**
+####  Log Transformation
 ![image](https://github.com/user-attachments/assets/a98ea5c8-b4da-46ea-bb7f-d77ed0ecab6c)
 - Applied log transformation to stabilize variance and normalize distributions.
 
-#### **5.4 Min-Max Scaling**
+####  Min-Max Scaling
 ![image](https://github.com/user-attachments/assets/3df61852-7992-4054-9e95-8dedf8ee6b29)
 - Used Min-Max Scaling to normalize all features to a range of 0 to 1.
 
 ---
 
-### **6. Dimensionality Reduction with Autoencoders**
+## Dimensionality Reduction with Autoencoders
 **Autoencoder**:
 ![image](https://github.com/user-attachments/assets/4b5aee1e-36aa-437a-8840-d4e0f3071e37)
 
@@ -107,21 +116,22 @@ To address class imbalance, we implemented an augmentation strategy:
  original data. It can be helpful when working with data sets that are 
  too large to conveniently or when you wish to investigate the
  distribution of different classes within your data.
-#### **6.1 Numerical Autoencoder**
+####  Numerical Autoencoder
 ![image](https://github.com/user-attachments/assets/c1c5c121-e9f4-4d91-a78c-663f8114f655)
 
 - Designed a deep autoencoder with 3 encoding and 3 decoding layers.
 - Trained using `mean_squared_error` loss and early stopping.
 
-#### **6.2 Categorical Autoencoder**
+####  Categorical Autoencoder
 - Implemented a tunable categorical autoencoder with the help of Bayesian Optimization to select optimal hyperparameters.
 
 ---
 
-### ** Neural Network**
+## Neural Network
 ![image](https://github.com/user-attachments/assets/2d38fd25-6847-4613-971b-a76a4641b5d1)
+
 A neural network is a machine learning algorithm that uses interconnected nodes to process data and solve complex problems. Neural networks are inspired by the human brain and are a type of artificial intelligence (AI).
-### **7. Insights and Observations**
+##  Insights and Observations
 
 - **Class Distribution**: The dataset was imbalanced, necessitating augmentation.
 - **Feature Dependencies**: High correlations revealed redundancies.
@@ -129,17 +139,21 @@ A neural network is a machine learning algorithm that uses interconnected nodes 
 
 ---
 
-### **8. Evaluation Metrics**
+## Evaluation Metrics
 
-#### **Metrics Used**:
-- **Accuracy**: Overall correctness of predictions.
+### Key Metrics Used:
+<img width="695" alt="Screenshot 2025-01-16 at 1 37 56 AM" src="https://github.com/user-attachments/assets/ce731e40-7c77-430e-b979-a112527a82b2" />
+
 - **Precision and Recall**: Emphasized due to the imbalanced nature of the dataset.
 - **F1-Score**: Provided a harmonic mean of precision and recall.
-- **ROC-AUC**: Assessed the model’s ability to distinguish between classes.
+- **Loss Value**:A lower loss indicates better alignment with the true values and improved model performance.
+- **Conclusion**:The key metrics we used include precision, recall, and F1 score for the minority class. This is because the dataset has a significant imbalance, with a high majority-to-minority ratio, making these metrics more meaningful. Metrics like accuracy are not suitable in this case, as a model predicting only the majority class would still achieve an accuracy of around 99%, rendering it misleading. Additionally, I considered the model's loss value as a critical metric, as a lower loss generally indicates better efficiency and performance.
 
 ---
 
-### **9. Conclusion**
+## Result
+![Screenshot 2025-01-16 014327](https://github.com/user-attachments/assets/a92c0ed9-9e2d-4070-a4b5-b0638373aaa8)
+This is result on training test data.
 
-This project encompassed a robust approach to binary classification, addressing challenges like class imbalance and feature redundancies. Key techniques, including UMAP, Beta-SMOTE, and autoencoders, were leveraged to improve data quality and model performance.
+
 
